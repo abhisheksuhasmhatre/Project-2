@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js canvas - particles - floor</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	<script src="jquery-3.1.0.min.js"></script>
+	<script>
+	function start() {
+			var deviceID = "3f003a000447353138383138";
+			var accessToken = "8e577a2e6b284b15f1ba0559c122184b09a8b327";
+		 window.ls = 0;
+		 var eventSource = new EventSource("https://api.spark.io/v1/devices/" + deviceID + "/events/?access_token=" + accessToken);
+							eventSource.addEventListener('Sensor_Output', function(e) {
+				 var parsedData = JSON.parse(e.data);
+				 parsedData.data;
+
+				dataset = parsedData.data.split(" ");
+				for(var i = 0; i < dataset.length; i++)
+				{
+					row = dataset[i];
+					//console.log(dataset[0]);
+				}
+				window.ls = parseInt(dataset[8]);
+				console.log(typeof(ls));
+				$('#Leftsensor').html("Left Sensor " + dataset[0]);
+				$('#Rightsensor').html("Right Sensor " + dataset[4]);
+				$('#People').html("People IN " + dataset[8]);
+				$('#Status').html("Status " + dataset[12]);
+			}, false);
+	}
+	</script>
+	<script type="text/javascript" src="paperjs-v0/dist/paper-full.js"> </script>
+	<script type = "text/paperscript" canvas="paper">
+				// The amount of segment points we want to create:
+				var amount = 5;
+
+				// The maximum height of the wave:
+				var height = 60;
+
+				// Create a new path and style it:
+				var path = new Path({
+				// 80% black:
+				strokeColor: [0.2],
+				strokeWidth: 3,
+				strokeCap: 'square'
+				});
+
+				// Add 5 segment points to the path spread out
+				// over the width of the view:
+				for (var i = 0; i <= amount; i++) {
+				path.add(new Point(i / amount, 1) * view.size);
+				}
+
+				// Select the path, so we can see how it is constructed:
+				path.selected = true;
+
+				function onFrame(event) {
+				// Loop through the segments of the path:
+				for (var i = 0; i <= amount; i++) {
+
+				// A cylic value between -1 and 1
+				var sinus = window.ls;
+
+				// Change the y position of the segment point:
+				y = sinus * height + 100;
+				}
+				// Uncomment the following line and run the script again
+				// to smooth the path:
+				path.smooth();
+				}
+	</script>
+	<body>
+		<canvas id="paper" width="500px" height="200px" resize></canvas>
+		<button onclick="start()">Connect</button>
+		<div id="Leftsensor"></div>
+ 	 	<div id="Rightsensor"></div>
+ 	 	<div id="People"></div>
+		<div id="Status"></div>
+		<span id="Balls"></span><br>
+    <span id="tstamp"></span>
+	</body>
+	</html>
